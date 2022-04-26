@@ -27,14 +27,14 @@ class Item {
         return $this->price;
     }
 
-    public function getInfo()
-    {
-        return "Товар " . $this->getTitle() . ", стоимость ". $this->getPrice() . "$";
-    }
-
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+
+    public function getInfo()
+    {
+        return "Товар " . $this->getTitle() . ", стоимость ". $this->getPrice() . "$";
     }
 }
 //$item1 = new Item(1, "Куртка", 2000);
