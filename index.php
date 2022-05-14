@@ -1,56 +1,36 @@
-<?php 
-// в начале конфиг
-define('DB_DRIVER','mysql');
-define('DB_HOST','localhost');
-define('DB_PORT', '8889');
-define('DB_NAME','test');
-define('DB_USER','marina');
-define('DB_PASS','1111');
- 
-try
-{
-	// соединяемся с базой данных
- 
-	$connect_str = DB_DRIVER . ':host='. DB_HOST .';dbname=' . DB_NAME;
-	$db = new PDO($connect_str,DB_USER,DB_PASS);
- 
-	// $rows = $db->exec("INSERT INTO `testing` VALUES
-	// 	(null, 'Ivan', 'ivan@test.com'),
-	// 	(null, 'Petr', 'petr@test.com'),
-	// 	(null, 'Vasiliy', 'vasiliy@test.com')
-	// ");
- 
- 
-	$error_array = $db->errorInfo();
- 
-	if($db->errorCode() != 0000)
- 
-	echo "SQL ошибка: " . $error_array[2] . '<br />';
- 
-	// if($rows) echo "Количество затронутых строк: " . $rows. "<br />";
- 
-	// теперь выберем несколько строчек из базы
- 
-	$result = $db->query("SELECT * FROM `products` LIMIT 3");
- 
-	// в случае ошибки SQL выражения выведем сообщене об ошибке
- 
-	$error_array = $db->errorInfo();
- 
-	if($db->errorCode() != 0000)
- 
-	echo "SQL ошибка: " . $error_array[2] . '<br /><br />';
- 
-	// теперь получаем данные из класса PDOStatement
- 
-    //var_dump($result->fetchAll(PDO::FETCH_ASSOC));
- 
-	while($row = $result->fetch())
-	{
-		var_dump($row);
-	}
+<?php
+include "db.php";
+
+$id = $_GET["id"] ?? 0;
+$step = $id + 3;
+
+$result = $db->query("SELECT * FROM `products` LIMIT 0, {$step}");
+
+$error_array = $db->errorInfo(); 
+if($db->errorCode() != 0000) {
+    echo "SQL ошибка: " . $error_array[2] . '<br/>';
 }
-catch(PDOException $e)
-{
-	die("Error: ".$e->getMessage());
-}
+
+$products = $result->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Домашнее задание № 4</title>
+</head>
+<body>
+    <ol>
+        <?php foreach ($products as $product): ?>
+            <li><?=$product["name"]?>  <?=$product["price"]?> $</li>
+            <?php $id = $product["id"] ?>
+        <?php endforeach; ?>
+    </ol>       
+    <a href="/index.php/?id=<?=$id?>">
+        <button>Загрузить еще</button>
+    </a>
+</body>
+</html>
